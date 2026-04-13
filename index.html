@@ -1,0 +1,1262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Sovereign Stack — Build Your Autonomous AI Agent OS</title>
+<link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700,900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300..700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ── Reset & Base ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Inter', sans-serif;
+  background: #060609;
+  color: #e8e8f0;
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+/* ── Reduced Motion ── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ── CSS Custom Properties ── */
+:root {
+  --cyan: #00d4ff;
+  --violet: #8b5cf6;
+  --green: #00ff88;
+  --bg: #060609;
+  --bg2: #0d0d1a;
+  --bg3: #111120;
+  --text: #e8e8f0;
+  --muted: #6b6b8a;
+  --border: rgba(255,255,255,0.06);
+  --shadow-card:
+    0 1px 0 rgba(255,255,255,0.055) inset,
+    0 -1px 0 rgba(0,0,0,0.45) inset,
+    0 24px 56px rgba(0,0,0,0.48),
+    0 0 0 0.5px rgba(255,255,255,0.06);
+  --shadow-card-hover:
+    0 1px 0 rgba(255,255,255,0.07) inset,
+    0 -1px 0 rgba(0,0,0,0.5) inset,
+    0 32px 72px rgba(0,0,0,0.55),
+    0 0 0 0.5px rgba(139,92,246,0.3);
+}
+
+/* ── Grain Texture ── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.04;
+}
+
+/* ── Mesh Background ── */
+.bg-mesh {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 0%, rgba(139,92,246,0.12) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 50% at 80% 100%, rgba(0,212,255,0.08) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 40% at 50% 50%, rgba(0,255,136,0.03) 0%, transparent 60%);
+}
+
+/* ── Layout ── */
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 24px;
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Keyframes ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-8px); }
+}
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 20px rgba(0,212,255,0.3), 0 0 40px rgba(0,212,255,0.1); }
+  50%       { box-shadow: 0 0 30px rgba(0,212,255,0.5), 0 0 60px rgba(0,212,255,0.2); }
+}
+@keyframes scan-line {
+  from { transform: translateY(-100%); }
+  to   { transform: translateY(400%); }
+}
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+
+/* ── Hero ── */
+.hero {
+  padding: 120px 0 80px;
+  text-align: center;
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(139,92,246,0.12);
+  border: 0.5px solid rgba(139,92,246,0.35);
+  border-radius: 100px;
+  padding: 6px 16px 6px 10px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: #c4b5fd;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 32px;
+  animation: fadeUp 0.55s 0.1s both ease-out;
+}
+.hero-badge-dot {
+  width: 6px;
+  height: 6px;
+  background: var(--green);
+  border-radius: 50%;
+  animation: pulse-glow 2s infinite;
+  box-shadow: 0 0 8px var(--green);
+  flex-shrink: 0;
+}
+
+.hero-h1 {
+  font-family: 'Satoshi', sans-serif;
+  font-weight: 900;
+  font-size: clamp(40px, 7vw, 72px);
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+  margin-bottom: 20px;
+  animation: fadeUp 0.70s 0.25s both ease-out;
+}
+.hero-h1 .gradient-text {
+  background: linear-gradient(130deg, #c4b5fd 0%, #8b5cf6 35%, #00d4ff 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero-sub {
+  font-size: clamp(16px, 2.2vw, 19px);
+  color: #9090b0;
+  line-height: 1.65;
+  max-width: 580px;
+  margin: 0 auto 36px;
+  animation: fadeUp 0.65s 0.40s both ease-out;
+}
+
+.hero-ctas {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 48px;
+  animation: fadeUp 0.60s 0.55s both ease-out;
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: linear-gradient(135deg, #7c3aed, #4f46e5);
+  color: #fff;
+  font-family: 'Satoshi', sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  padding: 14px 28px;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+  box-shadow: 0 4px 24px rgba(124,58,237,0.4), 0 1px 0 rgba(255,255,255,0.1) inset;
+}
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(124,58,237,0.55), 0 1px 0 rgba(255,255,255,0.12) inset;
+}
+.btn-primary:active { transform: translateY(0); }
+
+.price-badge {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  background: rgba(255,255,255,0.04);
+  border: 0.5px solid rgba(255,255,255,0.1);
+  border-radius: 12px;
+  padding: 10px 20px;
+}
+.price-badge .price-amount {
+  font-family: 'Satoshi', sans-serif;
+  font-weight: 900;
+  font-size: 24px;
+  color: #fff;
+  line-height: 1;
+}
+.price-badge .price-label {
+  font-size: 11px;
+  color: var(--muted);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin-top: 2px;
+}
+
+.hero-trust {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  flex-wrap: wrap;
+  animation: fadeUp 0.60s 0.70s both ease-out;
+}
+.trust-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--muted);
+}
+.trust-item svg { width: 14px; height: 14px; color: var(--green); flex-shrink: 0; }
+
+/* ── Terminal Block ── */
+.terminal-wrap {
+  margin: 64px auto 0;
+  max-width: 680px;
+  animation: fadeUp 0.80s 0.85s both ease-out;
+}
+.terminal {
+  background: #0a0a12;
+  border: 0.5px solid rgba(255,255,255,0.08);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+  position: relative;
+}
+.terminal::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(0,212,255,0.4), transparent);
+  animation: scan-line 4s linear infinite;
+}
+.terminal-bar {
+  background: #111120;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-bottom: 0.5px solid rgba(255,255,255,0.06);
+}
+.dot { width: 12px; height: 12px; border-radius: 50%; }
+.dot-r { background: #ff5f57; }
+.dot-y { background: #febc2e; }
+.dot-g { background: #28c840; }
+.terminal-title {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--muted);
+  margin-left: auto;
+  margin-right: auto;
+}
+.terminal-body {
+  padding: 20px 24px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  line-height: 1.8;
+}
+.t-prompt { color: var(--green); }
+.t-cmd { color: #c4b5fd; }
+.t-comment { color: #3d3d5c; }
+.t-output { color: #6b9fff; }
+.t-success { color: var(--green); }
+.t-cursor {
+  display: inline-block;
+  width: 8px;
+  height: 14px;
+  background: var(--cyan);
+  margin-left: 2px;
+  vertical-align: middle;
+  animation: blink 1.1s infinite;
+}
+
+/* ── Section Base ── */
+section { padding: 100px 0; position: relative; z-index: 1; }
+
+.section-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--cyan);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.section-label::before {
+  content: '';
+  width: 24px;
+  height: 1px;
+  background: var(--cyan);
+  display: inline-block;
+}
+
+.section-h2 {
+  font-family: 'Satoshi', sans-serif;
+  font-weight: 900;
+  font-size: clamp(28px, 4.5vw, 44px);
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  margin-bottom: 20px;
+}
+
+.section-p {
+  font-size: 17px;
+  line-height: 1.7;
+  color: #8888a8;
+  max-width: 640px;
+}
+
+/* ── Divider ── */
+.divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent);
+  margin: 0 auto;
+  max-width: 900px;
+}
+
+/* ── Problem Section ── */
+.problem-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+  margin-top: 48px;
+}
+.problem-card {
+  background: linear-gradient(150deg, #0f0f1f, #0a0a14);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: var(--shadow-card);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.problem-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-card-hover);
+}
+.problem-icon {
+  font-size: 24px;
+  margin-bottom: 12px;
+  display: block;
+}
+.problem-card h3 {
+  font-family: 'Satoshi', sans-serif;
+  font-weight: 700;
+  font-size: 15px;
+  margin-bottom: 8px;
+  color: #d0d0e8;
+}
+.problem-card p {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--muted);
+}
+
+/* ── What's Inside ── */
+.inside-grid {
+  display: grid;
+  gap: 12px;
+  margin-top: 48px;
+}
+.inside-item {
+  background: linear-gradient(150deg, #0f0f1f, #0a0a14);
+  border: 0.5px solid rgba(255,255,255,0.06);
+  border-radius: 14px;
+  padding: 20px 24px;
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+.inside-item:hover {
+  transform: translateX(6px);
+  border-color: rgba(139,92,246,0.3);
+}
+.inside-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--cyan);
+  background: rgba(0,212,255,0.08);
+  border: 0.5px solid rgba(0,212,255,0.2);
+  border-radius: 6px;
+  padding: 4px 8px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.inside-content h3 {
+  font-family: 'Satoshi', sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  margin-bottom: 4px;
+  color: #d8d8f0;
+}
+.inside-content p {
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--muted);
+}
+
+/* ── Stats Row ── */
+.stats-row {
+  display: flex;
+  justify-content: center;
+  gap: 48px;
+  flex-wrap: wrap;
+  margin: 64px 0;
+  padding: 40px;
+  background: linear-gradient(150deg, #0f0f1f, #0a0a14);
+  border-radius: 20px;
+  border: 0.5px solid rgba(255,255,255,0.06);
+  box-shadow: var(--shadow-card);
+}
+.stat {
+  text-align: center;
+}
+.stat-number {
+  font-family: 'Satoshi', sans-serif;
+  font-weight: 900;
+  font-size: 40px;
+  letter-spacing: -0.04em;
+  background: linear-gradient(130deg, #c4b5fd, #8b5cf6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1;
+}
+.stat-label {
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 4px;
+}
+
+/* ── Comparison Table ── */
+.comparison {
+  margin-top: 48px;
+  background: linear-gradient(150deg, #0f0f1f, #0a0a14);
+  border-radius: 20px;
+  border: 0.5px solid rgba(255,255,255,0.06);
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+}
+.comparison-header {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  padding: 16px 24px;
+  background: rgba(255,255,255,0.03);
+  border-bottom: 0.5px solid rgba(255,255,255,0.06);
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--muted);
+}
+.comparison-header .highlight { color: #c4b5fd; }
+.comparison-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  padding: 14px 24px;
+  border-bottom: 0.5px solid rgba(255,255,255,0.04);
+  font-size: 14px;
+  align-items: center;
+  transition: background 0.15s ease;
+}
+.comparison-row:last-child { border-bottom: none; }
+.comparison-row:hover { background: rgba(255,255,255,0.02); }
+.comparison-row .feature { color: #9090b0; }
+.comparison-row .bad { color: #ff4d6d; }
+.comparison-row .good { color: var(--green); font-weight: 600; }
+
+/* ── Pricing Section ── */
+.pricing-card {
+  max-width: 520px;
+  margin: 48px auto 0;
+  background: linear-gradient(150deg, #13101f, #0d0d1a);
+  border-radius: 24px;
+  border: 0.5px solid rgba(139,92,246,0.3);
+  padding: 40px;
+  box-shadow:
+    0 0 0 0.5px rgba(139,92,246,0.2),
+    0 32px 80px rgba(0,0,0,0.6),
+    0 1px 0 rgba(255,255,255,0.06) inset;
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+}
+.pricing-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(139,92,246,0.6), transparent);
+}
+.pricing-tag {
+  display: inline-block;
+  background: rgba(139,92,246,0.15);
+  border: 0.5px solid rgba(139,92,246,0.4);
+  color: #c4b5fd;
+  font-size: 11px;
+  font-family: 'JetBrains Mono', monospace;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 5px 14px;
+  border-radius: 100px;
+  margin-bottom: 24px;
+}
+.pricing-price {
+  font-family: 'Satoshi', sans-serif;
+  font-weight: 900;
+  font-size: 72px;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  color: #fff;
+  margin-bottom: 4px;
+}
+.pricing-price sup {
+  font-size: 32px;
+  vertical-align: super;
+  line-height: 1;
+  color: #9090b0;
+}
+.pricing-note {
+  font-size: 13px;
+  color: var(--muted);
+  margin-bottom: 32px;
+}
+.pricing-includes {
+  list-style: none;
+  margin-bottom: 32px;
+  text-align: left;
+}
+.pricing-includes li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 0;
+  font-size: 15px;
+  color: #c0c0d8;
+  border-bottom: 0.5px solid rgba(255,255,255,0.04);
+}
+.pricing-includes li:last-child { border-bottom: none; }
+.check {
+  width: 18px;
+  height: 18px;
+  background: rgba(0,255,136,0.1);
+  border: 0.5px solid rgba(0,255,136,0.3);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--green);
+  font-size: 10px;
+}
+
+.btn-buy {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  background: linear-gradient(135deg, #7c3aed 0%, #4338ca 100%);
+  color: #fff;
+  font-family: 'Satoshi', sans-serif;
+  font-weight: 700;
+  font-size: 17px;
+  padding: 16px 28px;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 4px 24px rgba(124,58,237,0.45), 0 1px 0 rgba(255,255,255,0.1) inset;
+  margin-bottom: 16px;
+}
+.btn-buy:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 36px rgba(124,58,237,0.6), 0 1px 0 rgba(255,255,255,0.12) inset;
+}
+.btn-buy:active { transform: translateY(0); }
+
+.pricing-guarantee {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+/* ── FAQ ── */
+.faq-list {
+  margin-top: 48px;
+  display: grid;
+  gap: 12px;
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.faq-item {
+  background: linear-gradient(150deg, #0f0f1f, #0a0a14);
+  border: 0.5px solid rgba(255,255,255,0.06);
+  border-radius: 14px;
+  overflow: hidden;
+}
+.faq-q {
+  padding: 20px 24px;
+  font-family: 'Satoshi', sans-serif;
+  font-weight: 700;
+  font-size: 15px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  color: #d8d8f0;
+  user-select: none;
+  transition: color 0.15s ease;
+}
+.faq-q:hover { color: #fff; }
+.faq-arrow {
+  width: 20px;
+  height: 20px;
+  border: 0.5px solid rgba(255,255,255,0.12);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  flex-shrink: 0;
+  transition: transform 0.25s ease, background 0.2s ease;
+}
+.faq-item.open .faq-arrow {
+  transform: rotate(180deg);
+  background: rgba(139,92,246,0.15);
+  border-color: rgba(139,92,246,0.35);
+  color: #c4b5fd;
+}
+.faq-a {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s ease, padding 0.25s ease;
+}
+.faq-item.open .faq-a {
+  max-height: 300px;
+}
+.faq-a-inner {
+  padding: 0 24px 20px;
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--muted);
+  border-top: 0.5px solid rgba(255,255,255,0.04);
+  padding-top: 16px;
+}
+
+/* ── Final CTA ── */
+.final-cta {
+  padding: 100px 0;
+  text-align: center;
+}
+.final-cta h2 {
+  font-family: 'Satoshi', sans-serif;
+  font-weight: 900;
+  font-size: clamp(28px, 5vw, 48px);
+  letter-spacing: -0.03em;
+  margin-bottom: 16px;
+}
+.final-cta p {
+  font-size: 17px;
+  color: #8888a8;
+  margin-bottom: 36px;
+}
+
+/* ── Footer ── */
+footer {
+  padding: 32px 0;
+  border-top: 0.5px solid rgba(255,255,255,0.04);
+  text-align: center;
+  font-size: 13px;
+  color: #3d3d5c;
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Scroll Reveal ── */
+.reveal {
+  opacity: 0;
+  transform: translateY(26px);
+  transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+}
+.reveal.vis { opacity: 1; transform: translateY(0); }
+.stagger > * {
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+.stagger.vis > *:nth-child(1) { transition-delay: .04s; }
+.stagger.vis > *:nth-child(2) { transition-delay: .12s; }
+.stagger.vis > *:nth-child(3) { transition-delay: .20s; }
+.stagger.vis > *:nth-child(4) { transition-delay: .28s; }
+.stagger.vis > *:nth-child(5) { transition-delay: .36s; }
+.stagger.vis > *:nth-child(6) { transition-delay: .44s; }
+.stagger.vis > *:nth-child(7) { transition-delay: .52s; }
+.stagger.vis > *:nth-child(8) { transition-delay: .60s; }
+.stagger.vis > * { opacity: 1; transform: translateY(0); }
+
+/* ── Responsive ── */
+@media (max-width: 600px) {
+  .hero { padding: 80px 0 60px; }
+  .stats-row { gap: 28px; padding: 28px 20px; }
+  .comparison-header, .comparison-row { grid-template-columns: 1.5fr 1fr 1fr; font-size: 12px; }
+  .pricing-card { padding: 28px 20px; }
+  .pricing-price { font-size: 56px; }
+  section { padding: 70px 0; }
+}
+</style>
+</head>
+<body>
+
+<div class="bg-mesh"></div>
+
+<!-- ══ HERO ══ -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-badge">
+      <span class="hero-badge-dot"></span>
+      Digital Product · Instant Download
+    </div>
+
+    <h1 class="hero-h1">
+      Build Your Own<br>
+      <span class="gradient-text">Autonomous AI Agent OS</span>
+    </h1>
+
+    <p class="hero-sub">
+      The complete, battle-tested playbook for standing up a persistent AI agent stack — Hermes, Paperclip, VPS — that runs 24/7, talks to you on Telegram, and works while you sleep. For <strong style="color:#e8e8f0;">$5/month</strong> in infrastructure.
+    </p>
+
+    <div class="hero-ctas">
+      <a href="https://gumroad.com/l/sovereign-stack" class="btn-primary" target="_blank">
+        <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3M3 17V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
+        Get the Blueprint
+      </a>
+      <div class="price-badge">
+        <span class="price-amount">$97</span>
+        <span class="price-label">One-time · No subscription</span>
+      </div>
+    </div>
+
+    <div class="hero-trust">
+      <span class="trust-item">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        40+ hours of research distilled
+      </span>
+      <span class="trust-item">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        Works on any VPS — Hetzner CX22 recommended
+      </span>
+      <span class="trust-item">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        Weekend setup, lifetime payoff
+      </span>
+    </div>
+
+    <!-- Terminal Demo -->
+    <div class="terminal-wrap">
+      <div class="terminal">
+        <div class="terminal-bar">
+          <span class="dot dot-r"></span>
+          <span class="dot dot-y"></span>
+          <span class="dot dot-g"></span>
+          <span class="terminal-title">sovereign-stack — hermes gateway</span>
+        </div>
+        <div class="terminal-body">
+          <div><span class="t-prompt">$</span> <span class="t-cmd">hermes gateway start --channels telegram</span></div>
+          <div class="t-comment">&#35; Hermes gateway active — listening on all channels</div>
+          <div>&nbsp;</div>
+          <div><span class="t-output">▶ CEO Agent</span> <span style="color:#3d3d5c">·</span> <span class="t-success">online</span> <span style="color:#3d3d5c">· persistent memory loaded · 1,204 sessions</span></div>
+          <div><span class="t-output">▶ Research Agent</span> <span style="color:#3d3d5c">·</span> <span class="t-success">online</span> <span style="color:#3d3d5c">· FTS5 indexed · 160+ skills</span></div>
+          <div><span class="t-output">▶ Builder Agent</span> <span style="color:#3d3d5c">·</span> <span class="t-success">online</span> <span style="color:#3d3d5c">· Paperclip task queue connected</span></div>
+          <div>&nbsp;</div>
+          <div style="color:#3d3d5c">&#47;&#47; Telegram DM from your phone will reach Hermes in &lt;1s</div>
+          <div><span class="t-prompt">$</span> <span class="t-cursor"></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ══ STATS ══ -->
+<section style="padding: 80px 0;">
+  <div class="container">
+    <div class="stats-row reveal">
+      <div class="stat">
+        <div class="stat-number"><span class="counter" data-target="5">0</span></div>
+        <div class="stat-label">$/month VPS cost</div>
+      </div>
+      <div class="stat">
+        <div class="stat-number"><span class="counter" data-target="3">0</span></div>
+        <div class="stat-label">agents running Day 1</div>
+      </div>
+      <div class="stat">
+        <div class="stat-number"><span class="counter" data-target="160">0</span>+</div>
+        <div class="stat-label">skills per agent</div>
+      </div>
+      <div class="stat">
+        <div class="stat-number">1<span style="font-size:24px;color:#6b6b8a">s</span></div>
+        <div class="stat-label">phone → agent latency</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ══ PROBLEM ══ -->
+<section>
+  <div class="container">
+    <p class="section-label">The Problem</p>
+    <h2 class="section-h2 reveal">
+      You know AI agents are the future.<br>
+      <span style="color:#6b6b8a">Nobody told you how to build one that actually works.</span>
+    </h2>
+    <p class="section-p reveal" style="margin-top:16px;">
+      Every week there's a new agent framework, a new demo, a new promise. But between you and a real autonomous AI stack that runs 24/7, remembers everything, and talks to you from your phone — there's a wall of decisions nobody documents.
+    </p>
+
+    <div class="problem-grid stagger" style="margin-top:48px;">
+      <div class="problem-card">
+        <span class="problem-icon">🤯</span>
+        <h3>Which framework actually persists memory?</h3>
+        <p>Most "agent" setups forget everything the moment the session ends. You're back to square one every time.</p>
+      </div>
+      <div class="problem-card">
+        <span class="problem-icon">🏗️</span>
+        <h3>How do you run agents 24/7 without breaking the bank?</h3>
+        <p>Cloud AI services cost a fortune at scale. Nobody teaches you how to run this on a $5/month VPS.</p>
+      </div>
+      <div class="problem-card">
+        <span class="problem-icon">📱</span>
+        <h3>How do you actually talk to your agents from your phone?</h3>
+        <p>Dashboards are fine. But you want to DM your AI OS like a person and have it do real work.</p>
+      </div>
+      <div class="problem-card">
+        <span class="problem-icon">🔌</span>
+        <h3>What's the control plane?</h3>
+        <p>Raw agents have no governance. No cost controls, no org chart, no approval flows. It's chaos.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ══ WHAT'S INSIDE ══ -->
+<section>
+  <div class="container">
+    <p class="section-label reveal">What's Inside</p>
+    <h2 class="section-h2 reveal">The complete playbook.<br>Every decision already made.</h2>
+    <p class="section-p reveal" style="margin-top:16px;">
+      This isn't a theory doc. This is the exact architecture I built, validated against real source code, with every config, every command, and every gotcha documented.
+    </p>
+
+    <div class="inside-grid stagger" style="margin-top:48px;">
+      <div class="inside-item">
+        <span class="inside-num">01</span>
+        <div class="inside-content">
+          <h3>VPS Selection + Bare Metal Setup</h3>
+          <p>Hetzner CX22 at $5/month. Ubuntu 24.04 config, NVM, PM2 for auto-restart, Caddy for HTTPS in under an hour.</p>
+        </div>
+      </div>
+      <div class="inside-item">
+        <span class="inside-num">02</span>
+        <div class="inside-content">
+          <h3>Hermes Agent Installation + Configuration</h3>
+          <p>NousResearch's persistent memory agent (30+ tools, 80+ skills, SQLite across sessions, FTS5 search). The real alternative to stateless Claude Code.</p>
+        </div>
+      </div>
+      <div class="inside-item">
+        <span class="inside-num">03</span>
+        <div class="inside-content">
+          <h3>Paperclip Control Plane</h3>
+          <p>The open-source AI company OS. Visual org chart, heartbeat scheduler, cost controls, governance approvals — your agents' control plane.</p>
+        </div>
+      </div>
+      <div class="inside-item">
+        <span class="inside-num">04</span>
+        <div class="inside-content">
+          <h3>Telegram Gateway — Your Phone Interface</h3>
+          <p>Hermes Gateway setup for Telegram. DM your CEO agent from anywhere. &lt;1 second latency. No laptop required.</p>
+        </div>
+      </div>
+      <div class="inside-item">
+        <span class="inside-num">05</span>
+        <div class="inside-content">
+          <h3>Day 1 Org Chart — 3 Agents That Work</h3>
+          <p>CEO (orchestration + memory), Research (Firecrawl + web intel), Builder (Claude Code + Paperclip tickets). Proven starting lineup.</p>
+        </div>
+      </div>
+      <div class="inside-item">
+        <span class="inside-num">06</span>
+        <div class="inside-content">
+          <h3>Event-Driven Wakeups via n8n</h3>
+          <p>Business signals (permit filings, competitor content, risk spikes) → n8n webhook → agent wakes with context. Proactive, not just scheduled.</p>
+        </div>
+      </div>
+      <div class="inside-item">
+        <span class="inside-num">07</span>
+        <div class="inside-content">
+          <h3>VibeVoice Voice Layer</h3>
+          <p>Speak to your agents hands-free on desktop. Microsoft's open-source VibeVoice-ASR via Vibing app — system-wide dictation, zero additional infrastructure.</p>
+        </div>
+      </div>
+      <div class="inside-item">
+        <span class="inside-num">08</span>
+        <div class="inside-content">
+          <h3>Full Architecture Diagram + Cost Model</h3>
+          <p>Every component mapped. Estimated cost: ~$69/month all-in for a full three-agent autonomous stack. Broken down line by line.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ══ COMPARISON ══ -->
+<section>
+  <div class="container">
+    <p class="section-label reveal">Why This Stack</p>
+    <h2 class="section-h2 reveal">vs. the alternatives</h2>
+
+    <div class="comparison reveal" style="margin-top:48px;">
+      <div class="comparison-header">
+        <span>Feature</span>
+        <span>Others</span>
+        <span class="highlight">Sovereign Stack</span>
+      </div>
+      <div class="comparison-row">
+        <span class="feature">Persistent memory across sessions</span>
+        <span class="bad">✗ Stateless</span>
+        <span class="good">✓ SQLite + FTS5</span>
+      </div>
+      <div class="comparison-row">
+        <span class="feature">Phone access (no laptop)</span>
+        <span class="bad">✗ Dashboard only</span>
+        <span class="good">✓ Telegram DM</span>
+      </div>
+      <div class="comparison-row">
+        <span class="feature">Governance + cost controls</span>
+        <span class="bad">✗ Wild west</span>
+        <span class="good">✓ Paperclip</span>
+      </div>
+      <div class="comparison-row">
+        <span class="feature">Monthly infra cost</span>
+        <span class="bad">$30–100+</span>
+        <span class="good">$5/month</span>
+      </div>
+      <div class="comparison-row">
+        <span class="feature">Voice interface</span>
+        <span class="bad">✗ None</span>
+        <span class="good">✓ VibeVoice</span>
+      </div>
+      <div class="comparison-row">
+        <span class="feature">Event-driven agent wakeups</span>
+        <span class="bad">✗ Cron only</span>
+        <span class="good">✓ Webhook API</span>
+      </div>
+      <div class="comparison-row">
+        <span class="feature">Skills library</span>
+        <span class="bad">✗ Build your own</span>
+        <span class="good">✓ 160+ pre-built</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ══ PERPLEXITY COMPARISON ══ -->
+<section>
+  <div class="container">
+    <p class="section-label reveal">Honest Comparison</p>
+    <h2 class="section-h2 reveal">Why not just use<br><span style="color:#6b6b8a">Perplexity Computer?</span></h2>
+    <p class="section-p reveal" style="margin-top:16px;">
+      Perplexity Computer is impressive. 19 AI models, 400+ integrations, $450M ARR in under 60 days. It proves the market is real. It also costs <strong style="color:#e8e8f0;">$200/month</strong> — and still can't do several things you actually need.
+    </p>
+
+    <div class="comparison reveal" style="margin-top:40px;">
+      <div class="comparison-header">
+        <span>What matters</span>
+        <span>Perplexity Computer</span>
+        <span class="highlight">Sovereign Stack</span>
+      </div>
+      <div class="comparison-row">
+        <span class="feature">Monthly cost</span>
+        <span class="bad">$200/mo minimum</span>
+        <span class="good">~$69/mo all-in</span>
+      </div>
+      <div class="comparison-row">
+        <span class="feature">Persistent memory across sessions</span>
+        <span class="bad">✗ Ephemeral cloud</span>
+        <span class="good">✓ SQLite forever</span>
+      </div>
+      <div class="comparison-row">
+        <span class="feature">Your data stays private</span>
+        <span class="bad">✗ Their servers</span>
+        <span class="good">✓ Your VPS only</span>
+      </div>
+      <div class="comparison-row">
+        <span class="feature">Phone access (Telegram DM)</span>
+        <span class="bad">✗ Web UI only</span>
+        <span class="good">✓ Native</span>
+      </div>
+      <div class="comparison-row">
+        <span class="feature">Cost transparency per task</span>
+        <span class="bad">✗ Opaque credits</span>
+        <span class="good">✓ Exact $ per agent</span>
+      </div>
+      <div class="comparison-row">
+        <span class="feature">Voice interface</span>
+        <span class="bad">✗ None</span>
+        <span class="good">✓ VibeVoice</span>
+      </div>
+      <div class="comparison-row">
+        <span class="feature">Model / provider lock-in</span>
+        <span class="bad">✗ Their routing</span>
+        <span class="good">✓ 8 providers, your choice</span>
+      </div>
+      <div class="comparison-row">
+        <span class="feature">You own the infrastructure</span>
+        <span class="bad">✗ Subscription dependency</span>
+        <span class="good">✓ Always yours</span>
+      </div>
+    </div>
+
+    <div class="reveal" style="margin-top:28px; padding:24px; background:rgba(139,92,246,0.06); border:0.5px solid rgba(139,92,246,0.2); border-radius:16px;">
+      <p style="font-size:15px; line-height:1.7; color:#a0a0c0;">
+        Perplexity Computer is for people who want someone else to handle everything — and will pay $200/month for the convenience. The Sovereign Stack is for operators who want to <strong style="color:#e8e8f0;">own</strong> the infrastructure, control the costs, and keep the data. One weekend of setup saves you <strong style="color:#c4b5fd;">$1,572/year</strong> vs. Perplexity Max — and gives you capabilities they can't offer at any price.
+      </p>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ══ PRICING ══ -->
+<section>
+  <div class="container" style="text-align:center;">
+    <p class="section-label reveal" style="justify-content:center;">Get It Now</p>
+    <h2 class="section-h2 reveal">One payment. Yours forever.</h2>
+    <p class="section-p reveal" style="margin: 16px auto 0; text-align:center;">
+      No subscription. No upsell. The full playbook — every config, every command, every gotcha — delivered as a PDF + architecture reference you keep.
+    </p>
+
+    <div class="pricing-card reveal">
+      <div class="pricing-tag">The Sovereign Stack Blueprint</div>
+      <div class="pricing-price"><sup>$</sup>97</div>
+      <p class="pricing-note">One-time payment · Instant PDF download</p>
+
+      <ul class="pricing-includes">
+        <li><span class="check">✓</span>Complete VPS setup guide (Hetzner + PM2 + Caddy)</li>
+        <li><span class="check">✓</span>Hermes agent install + configuration reference</li>
+        <li><span class="check">✓</span>Paperclip control plane setup walkthrough</li>
+        <li><span class="check">✓</span>Telegram Gateway — phone-to-agent in under an hour</li>
+        <li><span class="check">✓</span>Day 1 org chart: 3-agent proven starting lineup</li>
+        <li><span class="check">✓</span>n8n webhook → wakeup API integration guide</li>
+        <li><span class="check">✓</span>VibeVoice voice layer setup (Mac)</li>
+        <li><span class="check">✓</span>Full architecture diagram + annotated cost model</li>
+        <li><span class="check">✓</span>Future updates included — free forever</li>
+      </ul>
+
+      <a href="https://gumroad.com/l/sovereign-stack" class="btn-buy" target="_blank">
+        <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3M3 17V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
+        Get Instant Access — $97
+      </a>
+
+      <p class="pricing-guarantee">
+        🔒 Secured by Gumroad · Instant PDF delivery · Questions? Reply to your receipt.
+      </p>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ══ FAQ ══ -->
+<section>
+  <div class="container">
+    <p class="section-label reveal" style="justify-content:center; text-align:center;">FAQ</p>
+    <h2 class="section-h2 reveal" style="text-align:center;">Common questions</h2>
+
+    <div class="faq-list reveal">
+      <div class="faq-item">
+        <div class="faq-q">
+          Do I need to be a developer to use this?
+          <span class="faq-arrow">↓</span>
+        </div>
+        <div class="faq-a">
+          <div class="faq-a-inner">
+            You need to be comfortable with a terminal — copy-pasting commands, editing config files. You don't need to write code. If you've ever set up a Raspberry Pi or deployed a web app, this is well within reach. Every command is documented step by step.
+          </div>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">
+          What AI models does this work with?
+          <span class="faq-arrow">↓</span>
+        </div>
+        <div class="faq-a">
+          <div class="faq-a-inner">
+            Hermes supports 8 LLM providers out of the box — Anthropic (Claude), OpenAI, Groq, Mistral, OpenRouter, and more. The playbook is built around Claude as the primary model, but you can swap providers without changing your agent configuration.
+          </div>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">
+          How long does the setup actually take?
+          <span class="faq-arrow">↓</span>
+        </div>
+        <div class="faq-a">
+          <div class="faq-a-inner">
+            A focused weekend. Day 1: VPS provisioning + Hermes + Telegram gateway (4–6 hours). Day 2: Paperclip + first agents + n8n wakeup integration (4–6 hours). After that, your stack is running 24/7 with zero manual intervention.
+          </div>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">
+          Is this just a PDF or is there code included?
+          <span class="faq-arrow">↓</span>
+        </div>
+        <div class="faq-a">
+          <div class="faq-a-inner">
+            It's a PDF playbook + architecture reference with every config file, PM2 ecosystem config, Caddy Caddyfile, Hermes gateway settings, and Paperclip adapter config included as copy-pasteable blocks. Nothing is hand-wavy — it's the exact setup.
+          </div>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">
+          What's the ongoing cost after setup?
+          <span class="faq-arrow">↓</span>
+        </div>
+        <div class="faq-a">
+          <div class="faq-a-inner">
+            ~$5/month for Hetzner CX22 VPS. Plus your API token usage (Claude, etc.) — with budget caps set in Paperclip, you control exactly what each agent is allowed to spend. Most users keep total monthly costs under $70 for a full three-agent stack with active usage.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ══ FINAL CTA ══ -->
+<section class="final-cta">
+  <div class="container">
+    <h2 class="reveal">
+      Your AI OS is one weekend away.
+    </h2>
+    <p class="reveal">Stop reading about autonomous agents. Build yours.</p>
+    <div class="reveal">
+      <a href="https://gumroad.com/l/sovereign-stack" class="btn-primary" target="_blank" style="font-size:17px; padding:16px 36px; display:inline-flex;">
+        <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3M3 17V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
+        Get the Blueprint — $97
+      </a>
+    </div>
+    <p style="margin-top:20px; font-size:13px; color:#3d3d5c;">One-time. Instant download. Future updates free.</p>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    The Sovereign Stack · Built by someone who built it first · Questions? hey@sovereignstack.io
+  </div>
+</footer>
+
+<script>
+// ── Scroll Reveal ──
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (!e.isIntersecting) return;
+    e.target.classList.add('vis');
+    // Fire counters
+    e.target.querySelectorAll('.counter').forEach(animCounter);
+    io.unobserve(e.target);
+  });
+}, { threshold: 0.1 });
+document.querySelectorAll('.reveal, .stagger').forEach(el => io.observe(el));
+
+// ── Counters ──
+function animCounter(el) {
+  const target = parseInt(el.dataset.target);
+  const duration = 1800;
+  const start = performance.now();
+  (function tick(now) {
+    const p = Math.min((now - start) / duration, 1);
+    const eased = 1 - Math.pow(1 - p, 3);
+    el.textContent = Math.round(eased * target).toLocaleString();
+    if (p < 1) requestAnimationFrame(tick);
+  })(start);
+}
+
+// ── FAQ Accordion ──
+document.querySelectorAll('.faq-q').forEach(q => {
+  q.addEventListener('click', () => {
+    const item = q.parentElement;
+    const isOpen = item.classList.contains('open');
+    // Close all
+    document.querySelectorAll('.faq-item.open').forEach(i => i.classList.remove('open'));
+    // Open clicked if it was closed
+    if (!isOpen) item.classList.add('open');
+  });
+});
+
+// ── Subtle card tilt on hover ──
+document.querySelectorAll('.inside-item, .problem-card').forEach(card => {
+  card.addEventListener('mousemove', e => {
+    const r = card.getBoundingClientRect();
+    const x = (e.clientX - r.left - r.width / 2) / r.width;
+    const y = (e.clientY - r.top - r.height / 2) / r.height;
+    card.style.transform = `perspective(600px) rotateY(${x * 4}deg) rotateX(${-y * 3}deg) translateY(-3px)`;
+  });
+  card.addEventListener('mouseleave', () => {
+    card.style.transform = '';
+  });
+});
+</script>
+</body>
+</html>
