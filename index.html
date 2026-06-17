@@ -3,7 +3,26 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>The Sovereign Stack — Build Your Autonomous AI Agent OS</title>
+<title>The Sovereign Stack — Build Your Own Autonomous AI Agent OS (Free & Open Source)</title>
+<meta name="description" content="A free, open-source playbook for standing up a persistent AI agent OS — Hermes + Paperclip on a ~$5/mo VPS — that runs 24/7, takes orders from your phone over Telegram, and keeps every byte of memory on hardware you control.">
+<link rel="canonical" href="https://chrisjdimarco.github.io/sovereign-stack/">
+<meta name="theme-color" content="#060609">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230d0d1a'/%3E%3Cpath d='M8 11l5 5-5 5' stroke='%2300ff88' fill='none' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3Crect x='16' y='20' width='8' height='2.5' rx='1' fill='%2300ff88'/%3E%3C/svg%3E">
+
+<!-- Open Graph / Twitter -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="The Sovereign Stack">
+<meta property="og:title" content="The Sovereign Stack — Build Your Own Autonomous AI Agent OS">
+<meta property="og:description" content="Free, open-source playbook for a persistent AI agent OS that runs 24/7 on a ~$5/mo VPS, takes orders from your phone, and keeps your data on your own server.">
+<meta property="og:image" content="https://chrisjdimarco.github.io/sovereign-stack/assets/og-image.png">
+<meta property="og:url" content="https://chrisjdimarco.github.io/sovereign-stack/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="The Sovereign Stack — Build Your Own Autonomous AI Agent OS">
+<meta name="twitter:description" content="Free, open-source playbook for a persistent AI agent OS that runs 24/7, takes orders from your phone, and keeps your data on your own server.">
+<meta name="twitter:image" content="https://chrisjdimarco.github.io/sovereign-stack/assets/og-image.png">
+
+<script>document.documentElement.classList.add('js');</script>
+
 <link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700,900&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300..700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
@@ -36,7 +55,8 @@ body {
   --bg2: #0d0d1a;
   --bg3: #111120;
   --text: #e8e8f0;
-  --muted: #6b6b8a;
+  --muted: #8a8ab0;        /* AA-compliant for normal text on dark bg */
+  --faint: #6b6b8a;        /* large/secondary text only */
   --border: rgba(255,255,255,0.06);
   --shadow-card:
     0 1px 0 rgba(255,255,255,0.055) inset,
@@ -50,6 +70,13 @@ body {
     0 0 0 0.5px rgba(139,92,246,0.3);
 }
 
+/* ── Focus visibility (keyboard users) ── */
+:focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
 /* ── Grain Texture ── */
 body::before {
   content: '';
@@ -57,8 +84,8 @@ body::before {
   inset: 0;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
   pointer-events: none;
-  z-index: 9999;
-  opacity: 0.04;
+  z-index: 50;
+  opacity: 0.5;
 }
 
 /* ── Mesh Background ── */
@@ -158,9 +185,9 @@ body::before {
 
 .hero-sub {
   font-size: clamp(16px, 2.2vw, 19px);
-  color: #9090b0;
+  color: #c0c0d8;
   line-height: 1.65;
-  max-width: 580px;
+  max-width: 600px;
   margin: 0 auto 36px;
   animation: fadeUp 0.65s 0.40s both ease-out;
 }
@@ -171,7 +198,7 @@ body::before {
   justify-content: center;
   gap: 16px;
   flex-wrap: wrap;
-  margin-bottom: 48px;
+  margin-bottom: 40px;
   animation: fadeUp 0.60s 0.55s both ease-out;
 }
 
@@ -198,29 +225,28 @@ body::before {
 }
 .btn-primary:active { transform: translateY(0); }
 
-.price-badge {
+.btn-secondary {
   display: inline-flex;
-  flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
+  gap: 10px;
   background: rgba(255,255,255,0.04);
-  border: 0.5px solid rgba(255,255,255,0.1);
-  border-radius: 12px;
-  padding: 10px 20px;
-}
-.price-badge .price-amount {
+  border: 0.5px solid rgba(255,255,255,0.14);
+  color: #e8e8f0;
   font-family: 'Satoshi', sans-serif;
-  font-weight: 900;
-  font-size: 24px;
-  color: #fff;
-  line-height: 1;
+  font-weight: 600;
+  font-size: 16px;
+  padding: 14px 24px;
+  border-radius: 12px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
 }
-.price-badge .price-label {
-  font-size: 11px;
-  color: var(--muted);
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  margin-top: 2px;
+.btn-secondary:hover {
+  transform: translateY(-2px);
+  border-color: rgba(139,92,246,0.4);
+  background: rgba(139,92,246,0.08);
 }
+.btn-secondary:active { transform: translateY(0); }
 
 .hero-trust {
   display: flex;
@@ -287,12 +313,14 @@ body::before {
   font-family: 'JetBrains Mono', monospace;
   font-size: 13px;
   line-height: 1.8;
+  text-align: left;
 }
 .t-prompt { color: var(--green); }
 .t-cmd { color: #c4b5fd; }
-.t-comment { color: #3d3d5c; }
+.t-comment { color: #7a7a9c; }
 .t-output { color: #6b9fff; }
 .t-success { color: var(--green); }
+.t-dim { color: #7a7a9c; }
 .t-cursor {
   display: inline-block;
   width: 8px;
@@ -337,7 +365,7 @@ section { padding: 100px 0; position: relative; z-index: 1; }
 .section-p {
   font-size: 17px;
   line-height: 1.7;
-  color: #8888a8;
+  color: #a0a0c0;
   max-width: 640px;
 }
 
@@ -473,7 +501,7 @@ section { padding: 100px 0; position: relative; z-index: 1; }
 }
 .comparison-header {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: 1.4fr 1fr 1fr;
   padding: 16px 24px;
   background: rgba(255,255,255,0.03);
   border-bottom: 0.5px solid rgba(255,255,255,0.06);
@@ -486,7 +514,7 @@ section { padding: 100px 0; position: relative; z-index: 1; }
 .comparison-header .highlight { color: #c4b5fd; }
 .comparison-row {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: 1.4fr 1fr 1fr;
   padding: 14px 24px;
   border-bottom: 0.5px solid rgba(255,255,255,0.04);
   font-size: 14px;
@@ -495,13 +523,13 @@ section { padding: 100px 0; position: relative; z-index: 1; }
 }
 .comparison-row:last-child { border-bottom: none; }
 .comparison-row:hover { background: rgba(255,255,255,0.02); }
-.comparison-row .feature { color: #9090b0; }
-.comparison-row .bad { color: #ff4d6d; }
+.comparison-row .feature { color: #b0b0c8; }
+.comparison-row .managed { color: var(--muted); }
 .comparison-row .good { color: var(--green); font-weight: 600; }
 
-/* ── Pricing Section ── */
-.pricing-card {
-  max-width: 520px;
+/* ── Get Started / Open Source ── */
+.os-card {
+  max-width: 640px;
   margin: 48px auto 0;
   background: linear-gradient(150deg, #13101f, #0d0d1a);
   border-radius: 24px;
@@ -515,7 +543,7 @@ section { padding: 100px 0; position: relative; z-index: 1; }
   overflow: hidden;
   text-align: center;
 }
-.pricing-card::before {
+.os-card::before {
   content: '';
   position: absolute;
   top: 0;
@@ -525,11 +553,11 @@ section { padding: 100px 0; position: relative; z-index: 1; }
   height: 1px;
   background: linear-gradient(90deg, transparent, rgba(139,92,246,0.6), transparent);
 }
-.pricing-tag {
+.os-tag {
   display: inline-block;
-  background: rgba(139,92,246,0.15);
-  border: 0.5px solid rgba(139,92,246,0.4);
-  color: #c4b5fd;
+  background: rgba(0,255,136,0.12);
+  border: 0.5px solid rgba(0,255,136,0.4);
+  color: #6ff5b0;
   font-size: 11px;
   font-family: 'JetBrains Mono', monospace;
   letter-spacing: 0.1em;
@@ -538,32 +566,25 @@ section { padding: 100px 0; position: relative; z-index: 1; }
   border-radius: 100px;
   margin-bottom: 24px;
 }
-.pricing-price {
+.os-card h3 {
   font-family: 'Satoshi', sans-serif;
   font-weight: 900;
-  font-size: 72px;
-  letter-spacing: -0.04em;
-  line-height: 1;
-  color: #fff;
-  margin-bottom: 4px;
+  font-size: 28px;
+  letter-spacing: -0.02em;
+  margin-bottom: 12px;
 }
-.pricing-price sup {
-  font-size: 32px;
-  vertical-align: super;
-  line-height: 1;
-  color: #9090b0;
-}
-.pricing-note {
-  font-size: 13px;
+.os-card > p {
+  font-size: 15px;
   color: var(--muted);
-  margin-bottom: 32px;
+  line-height: 1.65;
+  margin-bottom: 28px;
 }
-.pricing-includes {
+.os-includes {
   list-style: none;
   margin-bottom: 32px;
   text-align: left;
 }
-.pricing-includes li {
+.os-includes li {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -572,7 +593,7 @@ section { padding: 100px 0; position: relative; z-index: 1; }
   color: #c0c0d8;
   border-bottom: 0.5px solid rgba(255,255,255,0.04);
 }
-.pricing-includes li:last-child { border-bottom: none; }
+.os-includes li:last-child { border-bottom: none; }
 .check {
   width: 18px;
   height: 18px;
@@ -586,36 +607,11 @@ section { padding: 100px 0; position: relative; z-index: 1; }
   color: var(--green);
   font-size: 10px;
 }
-
-.btn-buy {
+.os-cta-row {
   display: flex;
-  align-items: center;
+  gap: 12px;
   justify-content: center;
-  gap: 10px;
-  width: 100%;
-  background: linear-gradient(135deg, #7c3aed 0%, #4338ca 100%);
-  color: #fff;
-  font-family: 'Satoshi', sans-serif;
-  font-weight: 700;
-  font-size: 17px;
-  padding: 16px 28px;
-  border-radius: 12px;
-  border: none;
-  cursor: pointer;
-  text-decoration: none;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  box-shadow: 0 4px 24px rgba(124,58,237,0.45), 0 1px 0 rgba(255,255,255,0.1) inset;
-  margin-bottom: 16px;
-}
-.btn-buy:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 36px rgba(124,58,237,0.6), 0 1px 0 rgba(255,255,255,0.12) inset;
-}
-.btn-buy:active { transform: translateY(0); }
-
-.pricing-guarantee {
-  font-size: 13px;
-  color: var(--muted);
+  flex-wrap: wrap;
 }
 
 /* ── FAQ ── */
@@ -634,8 +630,12 @@ section { padding: 100px 0; position: relative; z-index: 1; }
   overflow: hidden;
 }
 .faq-q {
-  padding: 20px 24px;
+  width: 100%;
+  background: none;
+  border: none;
   font-family: 'Satoshi', sans-serif;
+  text-align: left;
+  padding: 20px 24px;
   font-weight: 700;
   font-size: 15px;
   cursor: pointer;
@@ -644,7 +644,6 @@ section { padding: 100px 0; position: relative; z-index: 1; }
   justify-content: space-between;
   gap: 16px;
   color: #d8d8f0;
-  user-select: none;
   transition: color 0.15s ease;
 }
 .faq-q:hover { color: #fff; }
@@ -672,7 +671,7 @@ section { padding: 100px 0; position: relative; z-index: 1; }
   transition: max-height 0.35s ease, padding 0.25s ease;
 }
 .faq-item.open .faq-a {
-  max-height: 300px;
+  max-height: 360px;
 }
 .faq-a-inner {
   padding: 0 24px 20px;
@@ -697,51 +696,80 @@ section { padding: 100px 0; position: relative; z-index: 1; }
 }
 .final-cta p {
   font-size: 17px;
-  color: #8888a8;
+  color: #a0a0c0;
   margin-bottom: 36px;
 }
+.final-cta .os-cta-row { margin-bottom: 0; }
 
 /* ── Footer ── */
 footer {
-  padding: 32px 0;
+  padding: 40px 0;
   border-top: 0.5px solid rgba(255,255,255,0.04);
   text-align: center;
-  font-size: 13px;
-  color: #3d3d5c;
   position: relative;
   z-index: 1;
 }
+.footer-author {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  color: #c0c0d8;
+  margin-bottom: 10px;
+}
+.footer-author .avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #7c3aed, #00d4ff);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Satoshi', sans-serif;
+  font-weight: 900;
+  font-size: 12px;
+  color: #fff;
+}
+footer a { color: #c4b5fd; text-decoration: none; }
+footer a:hover { text-decoration: underline; }
+.footer-meta {
+  font-size: 13px;
+  color: var(--faint);
+  margin-top: 6px;
+}
 
-/* ── Scroll Reveal ── */
-.reveal {
+/* ── Scroll Reveal (progressive enhancement: only hide when JS is present) ── */
+.js .reveal {
   opacity: 0;
   transform: translateY(26px);
   transition: opacity 0.7s ease-out, transform 0.7s ease-out;
 }
-.reveal.vis { opacity: 1; transform: translateY(0); }
-.stagger > * {
+.js .reveal.vis { opacity: 1; transform: translateY(0); }
+.js .stagger > * {
   opacity: 0;
   transform: translateY(22px);
   transition: opacity 0.6s ease-out, transform 0.6s ease-out;
 }
-.stagger.vis > *:nth-child(1) { transition-delay: .04s; }
-.stagger.vis > *:nth-child(2) { transition-delay: .12s; }
-.stagger.vis > *:nth-child(3) { transition-delay: .20s; }
-.stagger.vis > *:nth-child(4) { transition-delay: .28s; }
-.stagger.vis > *:nth-child(5) { transition-delay: .36s; }
-.stagger.vis > *:nth-child(6) { transition-delay: .44s; }
-.stagger.vis > *:nth-child(7) { transition-delay: .52s; }
-.stagger.vis > *:nth-child(8) { transition-delay: .60s; }
-.stagger.vis > * { opacity: 1; transform: translateY(0); }
+.js .stagger.vis > *:nth-child(1) { transition-delay: .04s; }
+.js .stagger.vis > *:nth-child(2) { transition-delay: .12s; }
+.js .stagger.vis > *:nth-child(3) { transition-delay: .20s; }
+.js .stagger.vis > *:nth-child(4) { transition-delay: .28s; }
+.js .stagger.vis > *:nth-child(5) { transition-delay: .36s; }
+.js .stagger.vis > *:nth-child(6) { transition-delay: .44s; }
+.js .stagger.vis > *:nth-child(7) { transition-delay: .52s; }
+.js .stagger.vis > *:nth-child(8) { transition-delay: .60s; }
+.js .stagger.vis > * { opacity: 1; transform: translateY(0); }
 
 /* ── Responsive ── */
 @media (max-width: 600px) {
   .hero { padding: 80px 0 60px; }
   .stats-row { gap: 28px; padding: 28px 20px; }
-  .comparison-header, .comparison-row { grid-template-columns: 1.5fr 1fr 1fr; font-size: 12px; }
-  .pricing-card { padding: 28px 20px; }
-  .pricing-price { font-size: 56px; }
+  .comparison-header, .comparison-row { grid-template-columns: 1.5fr 1fr 1fr; font-size: 12px; padding-left: 14px; padding-right: 14px; }
+  .os-card { padding: 28px 20px; }
   section { padding: 70px 0; }
+}
+@media (max-width: 380px) {
+  .comparison-header, .comparison-row { font-size: 11px; padding-left: 12px; padding-right: 12px; }
 }
 </style>
 </head>
@@ -754,41 +782,41 @@ footer {
   <div class="container">
     <div class="hero-badge">
       <span class="hero-badge-dot"></span>
-      Digital Product · Instant Download
+      Open Source · MIT Licensed · Free Forever
     </div>
 
     <h1 class="hero-h1">
-      Build Your Own<br>
+      Own Your<br>
       <span class="gradient-text">Autonomous AI Agent OS</span>
     </h1>
 
     <p class="hero-sub">
-      The complete, battle-tested playbook for standing up a persistent AI agent stack — Hermes, Paperclip, VPS — that runs 24/7, talks to you on Telegram, and works while you sleep. For <strong style="color:#e8e8f0;">$5/month</strong> in infrastructure.
+      A free, open-source playbook for standing up a persistent AI agent stack — Hermes + Paperclip on a tiny VPS — that runs 24/7, takes orders from your phone over Telegram, and keeps every byte of memory on hardware <strong style="color:#e8e8f0;">you control</strong>. Three agents, one weekend, roughly <strong style="color:#e8e8f0;">$5/month</strong> in infrastructure.
     </p>
 
     <div class="hero-ctas">
-      <a href="https://gumroad.com/l/sovereign-stack" class="btn-primary" target="_blank">
-        <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3M3 17V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
-        Get the Blueprint
+      <a href="https://github.com/ChrisJDiMarco/sovereign-stack/blob/main/product/blueprint.md" class="btn-primary" target="_blank" rel="noopener">
+        <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4 19.5A2.5 2.5 0 016.5 17H20M4 19.5A2.5 2.5 0 006.5 22H20v-5M4 19.5V5a2 2 0 012-2h12a2 2 0 012 2v12"/></svg>
+        Read the Guide
       </a>
-      <div class="price-badge">
-        <span class="price-amount">$97</span>
-        <span class="price-label">One-time · No subscription</span>
-      </div>
+      <a href="https://github.com/ChrisJDiMarco/sovereign-stack" class="btn-secondary" target="_blank" rel="noopener">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5C5.37.5 0 5.78 0 12.29c0 5.21 3.44 9.63 8.2 11.19.6.11.82-.25.82-.57v-2c-3.34.71-4.04-1.58-4.04-1.58-.55-1.36-1.33-1.72-1.33-1.72-1.09-.72.08-.71.08-.71 1.2.08 1.84 1.21 1.84 1.21 1.07 1.79 2.81 1.27 3.5.97.11-.76.42-1.27.76-1.56-2.67-.29-5.47-1.3-5.47-5.79 0-1.28.47-2.32 1.24-3.14-.13-.29-.54-1.48.12-3.09 0 0 1.01-.32 3.3 1.2a11.7 11.7 0 016 0c2.29-1.52 3.3-1.2 3.3-1.2.66 1.61.25 2.8.12 3.09.77.82 1.24 1.86 1.24 3.14 0 4.5-2.81 5.49-5.49 5.78.43.36.81 1.07.81 2.16v3.2c0 .32.22.69.83.57A12.01 12.01 0 0024 12.29C24 5.78 18.63.5 12 .5z"/></svg>
+        View on GitHub
+      </a>
     </div>
 
     <div class="hero-trust">
       <span class="trust-item">
-        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-        40+ hours of research distilled
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+        Free &amp; open source (MIT)
       </span>
       <span class="trust-item">
-        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-        Works on any VPS — Hetzner CX22 recommended
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+        Runs on a ~$5/mo VPS
       </span>
       <span class="trust-item">
-        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-        Weekend setup, lifetime payoff
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+        Weekend setup, yours forever
       </span>
     </div>
 
@@ -805,11 +833,11 @@ footer {
           <div><span class="t-prompt">$</span> <span class="t-cmd">hermes gateway start --channels telegram</span></div>
           <div class="t-comment">&#35; Hermes gateway active — listening on all channels</div>
           <div>&nbsp;</div>
-          <div><span class="t-output">▶ CEO Agent</span> <span style="color:#3d3d5c">·</span> <span class="t-success">online</span> <span style="color:#3d3d5c">· persistent memory loaded · 1,204 sessions</span></div>
-          <div><span class="t-output">▶ Research Agent</span> <span style="color:#3d3d5c">·</span> <span class="t-success">online</span> <span style="color:#3d3d5c">· FTS5 indexed · 160+ skills</span></div>
-          <div><span class="t-output">▶ Builder Agent</span> <span style="color:#3d3d5c">·</span> <span class="t-success">online</span> <span style="color:#3d3d5c">· Paperclip task queue connected</span></div>
+          <div><span class="t-output">▶ CEO Agent</span> <span class="t-dim">·</span> <span class="t-success">online</span> <span class="t-dim">· persistent SQLite memory loaded</span></div>
+          <div><span class="t-output">▶ Research Agent</span> <span class="t-dim">·</span> <span class="t-success">online</span> <span class="t-dim">· FTS5 recall · 60+ built-in tools</span></div>
+          <div><span class="t-output">▶ Builder Agent</span> <span class="t-dim">·</span> <span class="t-success">online</span> <span class="t-dim">· Paperclip task queue connected</span></div>
           <div>&nbsp;</div>
-          <div style="color:#3d3d5c">&#47;&#47; Telegram DM from your phone will reach Hermes in &lt;1s</div>
+          <div class="t-dim">&#47;&#47; A Telegram DM from your phone reaches Hermes in about a second</div>
           <div><span class="t-prompt">$</span> <span class="t-cursor"></span></div>
         </div>
       </div>
@@ -824,19 +852,19 @@ footer {
   <div class="container">
     <div class="stats-row reveal">
       <div class="stat">
-        <div class="stat-number"><span class="counter" data-target="5">0</span></div>
-        <div class="stat-label">$/month VPS cost</div>
+        <div class="stat-number">~$<span class="counter" data-target="5">0</span></div>
+        <div class="stat-label">/month VPS to run it</div>
       </div>
       <div class="stat">
         <div class="stat-number"><span class="counter" data-target="3">0</span></div>
         <div class="stat-label">agents running Day 1</div>
       </div>
       <div class="stat">
-        <div class="stat-number"><span class="counter" data-target="160">0</span>+</div>
-        <div class="stat-label">skills per agent</div>
+        <div class="stat-number"><span class="counter" data-target="60">0</span>+</div>
+        <div class="stat-label">built-in agent tools</div>
       </div>
       <div class="stat">
-        <div class="stat-number">1<span style="font-size:24px;color:#6b6b8a">s</span></div>
+        <div class="stat-number">~1<span style="font-size:24px;color:var(--faint)">s</span></div>
         <div class="stat-label">phone → agent latency</div>
       </div>
     </div>
@@ -854,29 +882,29 @@ footer {
       <span style="color:#6b6b8a">Nobody told you how to build one that actually works.</span>
     </h2>
     <p class="section-p reveal" style="margin-top:16px;">
-      Every week there's a new agent framework, a new demo, a new promise. But between you and a real autonomous AI stack that runs 24/7, remembers everything, and talks to you from your phone — there's a wall of decisions nobody documents.
+      Every week there's a new agent framework, a new demo, a new promise. But between you and a real autonomous AI stack that runs 24/7, remembers everything, and answers from your phone — there's a wall of decisions nobody documents in one place. This guide is that one place.
     </p>
 
     <div class="problem-grid stagger" style="margin-top:48px;">
       <div class="problem-card">
-        <span class="problem-icon">🤯</span>
+        <span class="problem-icon" role="img" aria-label="">🤯</span>
         <h3>Which framework actually persists memory?</h3>
         <p>Most "agent" setups forget everything the moment the session ends. You're back to square one every time.</p>
       </div>
       <div class="problem-card">
-        <span class="problem-icon">🏗️</span>
-        <h3>How do you run agents 24/7 without breaking the bank?</h3>
-        <p>Cloud AI services cost a fortune at scale. Nobody teaches you how to run this on a $5/month VPS.</p>
+        <span class="problem-icon" role="img" aria-label="">🏗️</span>
+        <h3>How do you run agents 24/7 without it costing a fortune?</h3>
+        <p>Managed AI platforms meter you by the credit. Nobody shows you how to run the whole thing on a $5/month VPS you own.</p>
       </div>
       <div class="problem-card">
-        <span class="problem-icon">📱</span>
+        <span class="problem-icon" role="img" aria-label="">📱</span>
         <h3>How do you actually talk to your agents from your phone?</h3>
-        <p>Dashboards are fine. But you want to DM your AI OS like a person and have it do real work.</p>
+        <p>Dashboards are fine. But you want to DM your AI OS like a person and have it do real work while you're away from the desk.</p>
       </div>
       <div class="problem-card">
-        <span class="problem-icon">🔌</span>
+        <span class="problem-icon" role="img" aria-label="">🔌</span>
         <h3>What's the control plane?</h3>
-        <p>Raw agents have no governance. No cost controls, no org chart, no approval flows. It's chaos.</p>
+        <p>Raw agents have no governance — no cost caps, no org chart, no approval flows. It's chaos. You need a layer that keeps them in line.</p>
       </div>
     </div>
   </div>
@@ -887,67 +915,67 @@ footer {
 <!-- ══ WHAT'S INSIDE ══ -->
 <section>
   <div class="container">
-    <p class="section-label reveal">What's Inside</p>
+    <p class="section-label reveal">What's Inside the Guide</p>
     <h2 class="section-h2 reveal">The complete playbook.<br>Every decision already made.</h2>
     <p class="section-p reveal" style="margin-top:16px;">
-      This isn't a theory doc. This is the exact architecture I built, validated against real source code, with every config, every command, and every gotcha documented.
+      This isn't a theory doc — it's the exact architecture, with every config, every command, and the gotchas spelled out. Ten chapters, free on GitHub, that take you from a blank VPS to a running three-agent stack.
     </p>
 
     <div class="inside-grid stagger" style="margin-top:48px;">
       <div class="inside-item">
         <span class="inside-num">01</span>
         <div class="inside-content">
-          <h3>VPS Selection + Bare Metal Setup</h3>
-          <p>Hetzner CX22 at $5/month. Ubuntu 24.04 config, NVM, PM2 for auto-restart, Caddy for HTTPS in under an hour.</p>
+          <h3>VPS Selection + Bare-Metal Setup</h3>
+          <p>A small VPS (Hetzner CX22 is ~$5/month). Ubuntu 24.04, NVM, PM2 for auto-restart, Caddy for automatic HTTPS — in under an hour.</p>
         </div>
       </div>
       <div class="inside-item">
         <span class="inside-num">02</span>
         <div class="inside-content">
-          <h3>Hermes Agent Installation + Configuration</h3>
-          <p>NousResearch's persistent memory agent (30+ tools, 80+ skills, SQLite across sessions, FTS5 search). The real alternative to stateless Claude Code.</p>
+          <h3>Hermes Agent — Install + Configuration</h3>
+          <p>Nous Research's open-source persistent-memory agent: SQLite memory across sessions, FTS5 recall, 60+ built-in tools, and a gateway that listens on Telegram. Claude-first, with OpenAI / OpenRouter / any OpenAI-compatible endpoint.</p>
         </div>
       </div>
       <div class="inside-item">
         <span class="inside-num">03</span>
         <div class="inside-content">
           <h3>Paperclip Control Plane</h3>
-          <p>The open-source AI company OS. Visual org chart, heartbeat scheduler, cost controls, governance approvals — your agents' control plane.</p>
+          <p>The open-source "AI company OS." Visual org chart, a wakeup queue with budget checks, per-agent cost caps, and approval flows — the governance layer your agents need.</p>
         </div>
       </div>
       <div class="inside-item">
         <span class="inside-num">04</span>
         <div class="inside-content">
           <h3>Telegram Gateway — Your Phone Interface</h3>
-          <p>Hermes Gateway setup for Telegram. DM your CEO agent from anywhere. &lt;1 second latency. No laptop required.</p>
+          <p>Wire up the Hermes gateway for Telegram. DM your CEO agent from anywhere, get a reply in about a second. No laptop required.</p>
         </div>
       </div>
       <div class="inside-item">
         <span class="inside-num">05</span>
         <div class="inside-content">
           <h3>Day 1 Org Chart — 3 Agents That Work</h3>
-          <p>CEO (orchestration + memory), Research (Firecrawl + web intel), Builder (Claude Code + Paperclip tickets). Proven starting lineup.</p>
+          <p>CEO (orchestration + memory), Research (web intel on demand), Builder (Claude Code + Paperclip tickets). A proven starting lineup with system prompts and budget caps included.</p>
         </div>
       </div>
       <div class="inside-item">
         <span class="inside-num">06</span>
         <div class="inside-content">
           <h3>Event-Driven Wakeups via n8n</h3>
-          <p>Business signals (permit filings, competitor content, risk spikes) → n8n webhook → agent wakes with context. Proactive, not just scheduled.</p>
+          <p>Business signals (new filings, competitor posts, risk spikes) → webhook → an agent wakes with context. Proactive, not just scheduled.</p>
         </div>
       </div>
       <div class="inside-item">
         <span class="inside-num">07</span>
         <div class="inside-content">
-          <h3>VibeVoice Voice Layer</h3>
-          <p>Speak to your agents hands-free on desktop. Microsoft's open-source VibeVoice-ASR via Vibing app — system-wide dictation, zero additional infrastructure.</p>
+          <h3>Voice Layer (Optional)</h3>
+          <p>Hands-free dictation on Mac. Use macOS's built-in on-device dictation to stay fully local, or the cloud-based Vibing app (powered by Microsoft VibeVoice) for richer rewriting — with the privacy trade-off spelled out, so you choose.</p>
         </div>
       </div>
       <div class="inside-item">
         <span class="inside-num">08</span>
         <div class="inside-content">
-          <h3>Full Architecture Diagram + Cost Model</h3>
-          <p>Every component mapped. Estimated cost: ~$69/month all-in for a full three-agent autonomous stack. Broken down line by line.</p>
+          <h3>Architecture Diagram + Honest Cost Model</h3>
+          <p>Every component mapped, and the real running cost broken down line by line — about $5/mo for the VPS, ~$69/mo all-in once you add your own (capped) API usage. No hidden math.</p>
         </div>
       </div>
     </div>
@@ -959,116 +987,58 @@ footer {
 <!-- ══ COMPARISON ══ -->
 <section>
   <div class="container">
-    <p class="section-label reveal">Why This Stack</p>
-    <h2 class="section-h2 reveal">vs. the alternatives</h2>
+    <p class="section-label reveal">Rent vs. Own</p>
+    <h2 class="section-h2 reveal">Managed cloud agents are great.<br><span style="color:#6b6b8a">Until you want to own them.</span></h2>
+    <p class="section-p reveal" style="margin-top:16px;">
+      Tools like Perplexity Computer are genuinely good, and if you'd rather rent, go for it — they prove the market is real. But if you want the memory, the data, and the cost ceiling to live on hardware <em>you</em> control, you self-host. Here's the honest trade-off.
+    </p>
 
     <div class="comparison reveal" style="margin-top:48px;">
       <div class="comparison-header">
-        <span>Feature</span>
-        <span>Others</span>
-        <span class="highlight">Sovereign Stack</span>
-      </div>
-      <div class="comparison-row">
-        <span class="feature">Persistent memory across sessions</span>
-        <span class="bad">✗ Stateless</span>
-        <span class="good">✓ SQLite + FTS5</span>
-      </div>
-      <div class="comparison-row">
-        <span class="feature">Phone access (no laptop)</span>
-        <span class="bad">✗ Dashboard only</span>
-        <span class="good">✓ Telegram DM</span>
-      </div>
-      <div class="comparison-row">
-        <span class="feature">Governance + cost controls</span>
-        <span class="bad">✗ Wild west</span>
-        <span class="good">✓ Paperclip</span>
-      </div>
-      <div class="comparison-row">
-        <span class="feature">Monthly infra cost</span>
-        <span class="bad">$30–100+</span>
-        <span class="good">$5/month</span>
-      </div>
-      <div class="comparison-row">
-        <span class="feature">Voice interface</span>
-        <span class="bad">✗ None</span>
-        <span class="good">✓ VibeVoice</span>
-      </div>
-      <div class="comparison-row">
-        <span class="feature">Event-driven agent wakeups</span>
-        <span class="bad">✗ Cron only</span>
-        <span class="good">✓ Webhook API</span>
-      </div>
-      <div class="comparison-row">
-        <span class="feature">Skills library</span>
-        <span class="bad">✗ Build your own</span>
-        <span class="good">✓ 160+ pre-built</span>
-      </div>
-    </div>
-  </div>
-</section>
-
-<div class="divider"></div>
-
-<!-- ══ PERPLEXITY COMPARISON ══ -->
-<section>
-  <div class="container">
-    <p class="section-label reveal">Honest Comparison</p>
-    <h2 class="section-h2 reveal">Why not just use<br><span style="color:#6b6b8a">Perplexity Computer?</span></h2>
-    <p class="section-p reveal" style="margin-top:16px;">
-      Perplexity Computer is impressive. 19 AI models, 400+ integrations, $450M ARR in under 60 days. It proves the market is real. It also costs <strong style="color:#e8e8f0;">$200/month</strong> — and still can't do several things you actually need.
-    </p>
-
-    <div class="comparison reveal" style="margin-top:40px;">
-      <div class="comparison-header">
         <span>What matters</span>
-        <span>Perplexity Computer</span>
+        <span>Managed cloud</span>
         <span class="highlight">Sovereign Stack</span>
       </div>
       <div class="comparison-row">
-        <span class="feature">Monthly cost</span>
-        <span class="bad">$200/mo minimum</span>
-        <span class="good">~$69/mo all-in</span>
+        <span class="feature">Where your memory lives</span>
+        <span class="managed">Their cloud</span>
+        <span class="good">Your server (SQLite)</span>
       </div>
       <div class="comparison-row">
-        <span class="feature">Persistent memory across sessions</span>
-        <span class="bad">✗ Ephemeral cloud</span>
-        <span class="good">✓ SQLite forever</span>
+        <span class="feature">Where your data lives</span>
+        <span class="managed">Their servers</span>
+        <span class="good">Your VPS only</span>
       </div>
       <div class="comparison-row">
-        <span class="feature">Your data stays private</span>
-        <span class="bad">✗ Their servers</span>
-        <span class="good">✓ Your VPS only</span>
+        <span class="feature">Phone interface</span>
+        <span class="managed">Their app</span>
+        <span class="good">Telegram DM you control</span>
       </div>
       <div class="comparison-row">
-        <span class="feature">Phone access (Telegram DM)</span>
-        <span class="bad">✗ Web UI only</span>
-        <span class="good">✓ Native</span>
+        <span class="feature">Cost model</span>
+        <span class="managed">Metered credits</span>
+        <span class="good">~$5/mo VPS + your capped keys</span>
       </div>
       <div class="comparison-row">
-        <span class="feature">Cost transparency per task</span>
-        <span class="bad">✗ Opaque credits</span>
-        <span class="good">✓ Exact $ per agent</span>
+        <span class="feature">Cost ceiling per agent</span>
+        <span class="managed">Plan limits</span>
+        <span class="good">Hard caps via Paperclip</span>
       </div>
       <div class="comparison-row">
-        <span class="feature">Voice interface</span>
-        <span class="bad">✗ None</span>
-        <span class="good">✓ VibeVoice</span>
+        <span class="feature">Model / provider choice</span>
+        <span class="managed">Their routing</span>
+        <span class="good">Claude-first, swap freely</span>
       </div>
       <div class="comparison-row">
-        <span class="feature">Model / provider lock-in</span>
-        <span class="bad">✗ Their routing</span>
-        <span class="good">✓ 8 providers, your choice</span>
-      </div>
-      <div class="comparison-row">
-        <span class="feature">You own the infrastructure</span>
-        <span class="bad">✗ Subscription dependency</span>
-        <span class="good">✓ Always yours</span>
+        <span class="feature">Who owns it</span>
+        <span class="managed">Your subscription</span>
+        <span class="good">You do — forever</span>
       </div>
     </div>
 
     <div class="reveal" style="margin-top:28px; padding:24px; background:rgba(139,92,246,0.06); border:0.5px solid rgba(139,92,246,0.2); border-radius:16px;">
-      <p style="font-size:15px; line-height:1.7; color:#a0a0c0;">
-        Perplexity Computer is for people who want someone else to handle everything — and will pay $200/month for the convenience. The Sovereign Stack is for operators who want to <strong style="color:#e8e8f0;">own</strong> the infrastructure, control the costs, and keep the data. One weekend of setup saves you <strong style="color:#c4b5fd;">$1,572/year</strong> vs. Perplexity Max — and gives you capabilities they can't offer at any price.
+      <p style="font-size:15px; line-height:1.7; color:#b0b0c8;">
+        Managed services are for people who want someone else to run everything — and that's a perfectly good choice. The Sovereign Stack is for the operator who refuses to rent their second brain: who wants to <strong style="color:#e8e8f0;">own</strong> the infrastructure, cap the costs, and keep the data on a box they control. The software is free and open source. This guide just saves you the weekend of figuring out how the pieces fit.
       </p>
     </div>
   </div>
@@ -1076,40 +1046,41 @@ footer {
 
 <div class="divider"></div>
 
-<!-- ══ PRICING ══ -->
+<!-- ══ GET STARTED / OPEN SOURCE ══ -->
 <section>
   <div class="container" style="text-align:center;">
-    <p class="section-label reveal" style="justify-content:center;">Get It Now</p>
-    <h2 class="section-h2 reveal">One payment. Yours forever.</h2>
+    <p class="section-label reveal" style="justify-content:center;">Get Started</p>
+    <h2 class="section-h2 reveal">Free. Open source. Yours.</h2>
     <p class="section-p reveal" style="margin: 16px auto 0; text-align:center;">
-      No subscription. No upsell. The full playbook — every config, every command, every gotcha — delivered as a PDF + architecture reference you keep.
+      No paywall, no email gate, no upsell. The full guide, the configs, and this page are MIT-licensed on GitHub. Read it, fork it, build your stack — and send a PR if you make it better.
     </p>
 
-    <div class="pricing-card reveal">
-      <div class="pricing-tag">The Sovereign Stack Blueprint</div>
-      <div class="pricing-price"><sup>$</sup>97</div>
-      <p class="pricing-note">One-time payment · Instant PDF download</p>
+    <div class="os-card reveal">
+      <div class="os-tag">By Sunday night you'll have</div>
+      <h3>A running three-agent AI OS</h3>
+      <p>Everything below is documented step by step, with copy-pasteable config blocks for each piece.</p>
 
-      <ul class="pricing-includes">
-        <li><span class="check">✓</span>Complete VPS setup guide (Hetzner + PM2 + Caddy)</li>
-        <li><span class="check">✓</span>Hermes agent install + configuration reference</li>
-        <li><span class="check">✓</span>Paperclip control plane setup walkthrough</li>
-        <li><span class="check">✓</span>Telegram Gateway — phone-to-agent in under an hour</li>
-        <li><span class="check">✓</span>Day 1 org chart: 3-agent proven starting lineup</li>
-        <li><span class="check">✓</span>n8n webhook → wakeup API integration guide</li>
-        <li><span class="check">✓</span>VibeVoice voice layer setup (Mac)</li>
-        <li><span class="check">✓</span>Full architecture diagram + annotated cost model</li>
-        <li><span class="check">✓</span>Future updates included — free forever</li>
+      <ul class="os-includes">
+        <li><span class="check" aria-hidden="true">✓</span>A hardened VPS with PM2 + Caddy (auto-HTTPS)</li>
+        <li><span class="check" aria-hidden="true">✓</span>Hermes installed with persistent SQLite memory</li>
+        <li><span class="check" aria-hidden="true">✓</span>Paperclip control plane with per-agent cost caps</li>
+        <li><span class="check" aria-hidden="true">✓</span>Telegram gateway — phone-to-agent in under an hour</li>
+        <li><span class="check" aria-hidden="true">✓</span>A proven 3-agent org chart (CEO / Research / Builder)</li>
+        <li><span class="check" aria-hidden="true">✓</span>n8n webhook → agent wakeup automations</li>
+        <li><span class="check" aria-hidden="true">✓</span>Optional Mac voice layer (local or cloud, your call)</li>
+        <li><span class="check" aria-hidden="true">✓</span>An architecture diagram + an honest cost model</li>
       </ul>
 
-      <a href="https://gumroad.com/l/sovereign-stack" class="btn-buy" target="_blank">
-        <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3M3 17V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
-        Get Instant Access — $97
-      </a>
-
-      <p class="pricing-guarantee">
-        🔒 Secured by Gumroad · Instant PDF delivery · Questions? Reply to your receipt.
-      </p>
+      <div class="os-cta-row">
+        <a href="https://github.com/ChrisJDiMarco/sovereign-stack/blob/main/product/blueprint.md" class="btn-primary" target="_blank" rel="noopener">
+          <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4 19.5A2.5 2.5 0 016.5 17H20M4 19.5A2.5 2.5 0 006.5 22H20v-5M4 19.5V5a2 2 0 012-2h12a2 2 0 012 2v12"/></svg>
+          Read the Full Guide
+        </a>
+        <a href="https://github.com/ChrisJDiMarco/sovereign-stack" class="btn-secondary" target="_blank" rel="noopener">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5C5.37.5 0 5.78 0 12.29c0 5.21 3.44 9.63 8.2 11.19.6.11.82-.25.82-.57v-2c-3.34.71-4.04-1.58-4.04-1.58-.55-1.36-1.33-1.72-1.33-1.72-1.09-.72.08-.71.08-.71 1.2.08 1.84 1.21 1.84 1.21 1.07 1.79 2.81 1.27 3.5.97.11-.76.42-1.27.76-1.56-2.67-.29-5.47-1.3-5.47-5.79 0-1.28.47-2.32 1.24-3.14-.13-.29-.54-1.48.12-3.09 0 0 1.01-.32 3.3 1.2a11.7 11.7 0 016 0c2.29-1.52 3.3-1.2 3.3-1.2.66 1.61.25 2.8.12 3.09.77.82 1.24 1.86 1.24 3.14 0 4.5-2.81 5.49-5.49 5.78.43.36.81 1.07.81 2.16v3.2c0 .32.22.69.83.57A12.01 12.01 0 0024 12.29C24 5.78 18.63.5 12 .5z"/></svg>
+          Star on GitHub
+        </a>
+      </div>
     </div>
   </div>
 </section>
@@ -1124,57 +1095,68 @@ footer {
 
     <div class="faq-list reveal">
       <div class="faq-item">
-        <div class="faq-q">
+        <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-a-1">
+          Is it really free?
+          <span class="faq-arrow" aria-hidden="true">↓</span>
+        </button>
+        <div class="faq-a" id="faq-a-1" role="region">
+          <div class="faq-a-inner">
+            Yes — the entire guide, the configs, and this site are MIT-licensed and live on GitHub. The underlying software (Hermes, Paperclip) is open source too. There's nothing to buy. Your only real costs are the ~$5/month VPS and your own API usage, which you cap yourself.
+          </div>
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-a-2">
           Do I need to be a developer to use this?
-          <span class="faq-arrow">↓</span>
-        </div>
-        <div class="faq-a">
+          <span class="faq-arrow" aria-hidden="true">↓</span>
+        </button>
+        <div class="faq-a" id="faq-a-2" role="region">
           <div class="faq-a-inner">
-            You need to be comfortable with a terminal — copy-pasting commands, editing config files. You don't need to write code. If you've ever set up a Raspberry Pi or deployed a web app, this is well within reach. Every command is documented step by step.
+            You need to be comfortable with a terminal — copy-pasting commands, editing config files. You don't need to write code. If you've ever set up a Raspberry Pi or deployed a small web app, this is well within reach. Every command is documented step by step.
           </div>
         </div>
       </div>
       <div class="faq-item">
-        <div class="faq-q">
+        <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-a-3">
           What AI models does this work with?
-          <span class="faq-arrow">↓</span>
-        </div>
-        <div class="faq-a">
+          <span class="faq-arrow" aria-hidden="true">↓</span>
+        </button>
+        <div class="faq-a" id="faq-a-3" role="region">
           <div class="faq-a-inner">
-            Hermes supports 8 LLM providers out of the box — Anthropic (Claude), OpenAI, Groq, Mistral, OpenRouter, and more. The playbook is built around Claude as the primary model, but you can swap providers without changing your agent configuration.
+            The playbook is built around Claude as the primary model (Hermes supports it natively), but Hermes works with OpenAI, OpenRouter, and any OpenAI-compatible endpoint — so you can route to dozens of providers or swap models without changing your agent setup.
           </div>
         </div>
       </div>
       <div class="faq-item">
-        <div class="faq-q">
+        <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-a-4">
           How long does the setup actually take?
-          <span class="faq-arrow">↓</span>
-        </div>
-        <div class="faq-a">
+          <span class="faq-arrow" aria-hidden="true">↓</span>
+        </button>
+        <div class="faq-a" id="faq-a-4" role="region">
           <div class="faq-a-inner">
-            A focused weekend. Day 1: VPS provisioning + Hermes + Telegram gateway (4–6 hours). Day 2: Paperclip + first agents + n8n wakeup integration (4–6 hours). After that, your stack is running 24/7 with zero manual intervention.
+            A focused weekend. Day 1: VPS provisioning + Hermes + Telegram gateway (4–6 hours). Day 2: Paperclip + your first agents + n8n wakeups (4–6 hours). After that, your stack runs 24/7 with little to no manual intervention.
           </div>
         </div>
       </div>
       <div class="faq-item">
-        <div class="faq-q">
-          Is this just a PDF or is there code included?
-          <span class="faq-arrow">↓</span>
-        </div>
-        <div class="faq-a">
+        <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-a-5">
+          What's the ongoing cost to run it?
+          <span class="faq-arrow" aria-hidden="true">↓</span>
+        </button>
+        <div class="faq-a" id="faq-a-5" role="region">
           <div class="faq-a-inner">
-            It's a PDF playbook + architecture reference with every config file, PM2 ecosystem config, Caddy Caddyfile, Hermes gateway settings, and Paperclip adapter config included as copy-pasteable blocks. Nothing is hand-wavy — it's the exact setup.
+            ~$5/month for the Hetzner CX22 VPS, plus your own API token usage (Claude, etc.). With per-agent budget caps set in Paperclip you control exactly what each agent can spend. A realistic all-in figure for an actively-used three-agent stack is around $69/month — the guide breaks it down line by line.
           </div>
         </div>
       </div>
       <div class="faq-item">
-        <div class="faq-q">
-          What's the ongoing cost after setup?
-          <span class="faq-arrow">↓</span>
-        </div>
-        <div class="faq-a">
+        <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-a-6">
+          Won't a guide like this go stale as the tools change?
+          <span class="faq-arrow" aria-hidden="true">↓</span>
+        </button>
+        <div class="faq-a" id="faq-a-6" role="region">
           <div class="faq-a-inner">
-            ~$5/month for Hetzner CX22 VPS. Plus your API token usage (Claude, etc.) — with budget caps set in Paperclip, you control exactly what each agent is allowed to spend. Most users keep total monthly costs under $70 for a full three-agent stack with active usage.
+            It's a living document on GitHub, not a frozen PDF. Each chapter notes the versions it was last verified against, and updates land as commits. Watch or star the repo to get them, and open an issue or PR if you hit something that's drifted — fixes get folded back in for everyone.
           </div>
         </div>
       </div>
@@ -1191,37 +1173,58 @@ footer {
       Your AI OS is one weekend away.
     </h2>
     <p class="reveal">Stop reading about autonomous agents. Build yours.</p>
-    <div class="reveal">
-      <a href="https://gumroad.com/l/sovereign-stack" class="btn-primary" target="_blank" style="font-size:17px; padding:16px 36px; display:inline-flex;">
-        <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3M3 17V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
-        Get the Blueprint — $97
+    <div class="reveal os-cta-row">
+      <a href="https://github.com/ChrisJDiMarco/sovereign-stack/blob/main/product/blueprint.md" class="btn-primary" target="_blank" rel="noopener" style="font-size:17px; padding:16px 32px;">
+        <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4 19.5A2.5 2.5 0 016.5 17H20M4 19.5A2.5 2.5 0 006.5 22H20v-5M4 19.5V5a2 2 0 012-2h12a2 2 0 012 2v12"/></svg>
+        Read the Guide
+      </a>
+      <a href="https://github.com/ChrisJDiMarco/sovereign-stack" class="btn-secondary" target="_blank" rel="noopener" style="font-size:17px; padding:16px 28px;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5C5.37.5 0 5.78 0 12.29c0 5.21 3.44 9.63 8.2 11.19.6.11.82-.25.82-.57v-2c-3.34.71-4.04-1.58-4.04-1.58-.55-1.36-1.33-1.72-1.33-1.72-1.09-.72.08-.71.08-.71 1.2.08 1.84 1.21 1.84 1.21 1.07 1.79 2.81 1.27 3.5.97.11-.76.42-1.27.76-1.56-2.67-.29-5.47-1.3-5.47-5.79 0-1.28.47-2.32 1.24-3.14-.13-.29-.54-1.48.12-3.09 0 0 1.01-.32 3.3 1.2a11.7 11.7 0 016 0c2.29-1.52 3.3-1.2 3.3-1.2.66 1.61.25 2.8.12 3.09.77.82 1.24 1.86 1.24 3.14 0 4.5-2.81 5.49-5.49 5.78.43.36.81 1.07.81 2.16v3.2c0 .32.22.69.83.57A12.01 12.01 0 0024 12.29C24 5.78 18.63.5 12 .5z"/></svg>
+        Star on GitHub
       </a>
     </div>
-    <p style="margin-top:20px; font-size:13px; color:#3d3d5c;">One-time. Instant download. Future updates free.</p>
+    <p style="margin-top:20px; font-size:13px; color:var(--faint);">Free forever · MIT licensed · Contributions welcome</p>
   </div>
 </section>
 
 <footer>
   <div class="container">
-    The Sovereign Stack · Built by someone who built it first · Questions? hey@sovereignstack.io
+    <div class="footer-author">
+      <span class="avatar" aria-hidden="true">CD</span>
+      Built and maintained by <a href="https://github.com/ChrisJDiMarco" target="_blank" rel="noopener">Chris DiMarco</a>
+    </div>
+    <div class="footer-meta">
+      The Sovereign Stack · Free &amp; open source (MIT) · Questions or fixes? <a href="https://github.com/ChrisJDiMarco/sovereign-stack/issues" target="_blank" rel="noopener">Open an issue on GitHub</a>
+    </div>
   </div>
 </footer>
 
 <script>
-// ── Scroll Reveal ──
-const io = new IntersectionObserver(entries => {
-  entries.forEach(e => {
-    if (!e.isIntersecting) return;
-    e.target.classList.add('vis');
-    // Fire counters
-    e.target.querySelectorAll('.counter').forEach(animCounter);
-    io.unobserve(e.target);
-  });
-}, { threshold: 0.1 });
-document.querySelectorAll('.reveal, .stagger').forEach(el => io.observe(el));
+// ── Scroll Reveal (with a safety net so content can never stay hidden) ──
+const revealAll = () => document.querySelectorAll('.reveal, .stagger').forEach(el => {
+  el.classList.add('vis');
+  el.querySelectorAll('.counter').forEach(animCounter);
+});
+if ('IntersectionObserver' in window) {
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (!e.isIntersecting) return;
+      e.target.classList.add('vis');
+      e.target.querySelectorAll('.counter').forEach(animCounter);
+      io.unobserve(e.target);
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal, .stagger').forEach(el => io.observe(el));
+  // Fallback: if the observer never fires (edge cases), reveal everything after 3s.
+  setTimeout(revealAll, 3000);
+} else {
+  revealAll();
+}
 
 // ── Counters ──
 function animCounter(el) {
+  if (el.dataset.done) return;
+  el.dataset.done = '1';
   const target = parseInt(el.dataset.target);
   const duration = 1800;
   const start = performance.now();
@@ -1233,30 +1236,40 @@ function animCounter(el) {
   })(start);
 }
 
-// ── FAQ Accordion ──
-document.querySelectorAll('.faq-q').forEach(q => {
-  q.addEventListener('click', () => {
-    const item = q.parentElement;
+// ── FAQ Accordion (accessible: real buttons + aria-expanded) ──
+document.querySelectorAll('.faq-q').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const item = btn.parentElement;
     const isOpen = item.classList.contains('open');
-    // Close all
-    document.querySelectorAll('.faq-item.open').forEach(i => i.classList.remove('open'));
-    // Open clicked if it was closed
-    if (!isOpen) item.classList.add('open');
+    document.querySelectorAll('.faq-item.open').forEach(i => {
+      i.classList.remove('open');
+      i.querySelector('.faq-q').setAttribute('aria-expanded', 'false');
+    });
+    if (!isOpen) {
+      item.classList.add('open');
+      btn.setAttribute('aria-expanded', 'true');
+    }
   });
 });
 
-// ── Subtle card tilt on hover ──
-document.querySelectorAll('.inside-item, .problem-card').forEach(card => {
-  card.addEventListener('mousemove', e => {
-    const r = card.getBoundingClientRect();
-    const x = (e.clientX - r.left - r.width / 2) / r.width;
-    const y = (e.clientY - r.top - r.height / 2) / r.height;
-    card.style.transform = `perspective(600px) rotateY(${x * 4}deg) rotateX(${-y * 3}deg) translateY(-3px)`;
+// ── Subtle card tilt on hover (skipped for reduced-motion / touch) ──
+const allowTilt = !window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  && window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+if (allowTilt) {
+  document.querySelectorAll('.inside-item, .problem-card').forEach(card => {
+    let rect = null;
+    card.addEventListener('mouseenter', () => { rect = card.getBoundingClientRect(); });
+    card.addEventListener('mousemove', e => {
+      if (!rect) rect = card.getBoundingClientRect();
+      const x = (e.clientX - rect.left - rect.width / 2) / rect.width;
+      const y = (e.clientY - rect.top - rect.height / 2) / rect.height;
+      requestAnimationFrame(() => {
+        card.style.transform = `perspective(600px) rotateY(${x * 4}deg) rotateX(${-y * 3}deg) translateY(-3px)`;
+      });
+    });
+    card.addEventListener('mouseleave', () => { card.style.transform = ''; rect = null; });
   });
-  card.addEventListener('mouseleave', () => {
-    card.style.transform = '';
-  });
-});
+}
 </script>
 </body>
 </html>

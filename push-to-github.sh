@@ -1,11 +1,11 @@
 #!/bin/bash
 # ═══════════════════════════════════════════════════════════════
 # Sovereign Stack — One-Command GitHub Push
-# Run this from your Mac terminal:  bash ~/jarvis/owners-inbox/sovereign-stack-repo/push-to-github.sh
+# Run this from your Mac terminal:  bash ~/jarvis/projects/sovereign-stack/push-to-github.sh
 # ═══════════════════════════════════════════════════════════════
 
 set -e
-REPO_DIR="$HOME/jarvis/owners-inbox/sovereign-stack-repo"
+REPO_DIR="$HOME/jarvis/projects/sovereign-stack"
 GITHUB_USER="ChrisJDiMarco"
 REPO_NAME="sovereign-stack"
 
@@ -55,15 +55,15 @@ if gh repo view "$GITHUB_USER/$REPO_NAME" &> /dev/null; then
 else
   gh repo create "$GITHUB_USER/$REPO_NAME" \
     --public \
-    --description "The Sovereign Stack — Build Your Autonomous AI Agent OS on \$5/month" \
-    --homepage "https://$GITHUB_USER.github.io/$REPO_NAME"
+    --description "The Sovereign Stack — Build Your Own Autonomous AI Agent OS (free & open source)" \
+    --homepage "https://$GITHUB_USER.github.io/$REPO_NAME/"
   echo "✅ Repo created: github.com/$GITHUB_USER/$REPO_NAME"
 fi
 
 # Step 6: Commit and push
 echo "📤 Committing and pushing..."
 git add .
-git commit -m "Launch: Sovereign Stack sales page, blueprint, and agent plan" 2>/dev/null || \
+git commit -m "Launch: Sovereign Stack open-source guide + landing page" 2>/dev/null || \
   echo "   (nothing new to commit)"
 
 git remote remove origin 2>/dev/null || true
@@ -90,11 +90,10 @@ echo "🌐 Live page:  https://$GITHUB_USER.github.io/$REPO_NAME"
 echo "   (Pages takes 2-3 min to go live after first push)"
 echo ""
 echo "NEXT STEPS (manual — ~5 min):"
-echo "  1. Go to gumroad.com → New Product → upload product/blueprint.md as PDF"
-echo "  2. Set price to \$97, slug to 'sovereign-stack'"
-echo "  3. Copy the Gumroad URL, update in index.html:"
-echo "     sed -i '' 's|https://gumroad.com/l/sovereign-stack|YOUR_REAL_URL|g' index.html"
-echo "     git add index.html && git commit -m 'Live Gumroad link' && git push"
+echo "  1. Wait ~2-3 min, confirm the live page loads: https://$GITHUB_USER.github.io/$REPO_NAME/"
+echo "  2. Paste that URL into X/Slack to confirm the social share image renders"
+echo "  3. Review launch-thread.md, replace the [REPO LINK] placeholders, and post when ready"
+echo "     (cross-post to r/selfhosted, r/AI_Agents, r/LocalLLaMA, Show HN)"
 echo ""
-echo "  Then run the Twitter thread in: owners-inbox/sovereign-stack-repo/launch-thread.md"
+echo "  Optional: add a custom domain via a CNAME file + DNS, then update the URLs in index.html"
 echo "════════════════════════════════════"
