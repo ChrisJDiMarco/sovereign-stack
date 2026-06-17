@@ -30,6 +30,8 @@ Most "AI agent" setups forget everything the moment a session ends, cost a fortu
 
 It's a complete, step-by-step guide — blank VPS to a running three-agent stack in a weekend. Every command, every config, every gotcha is written down. There's **no paywall, no email gate, and no price**. The software underneath is open source; this repo just saves you the ~40 hours of figuring out how the pieces fit.
 
+And it treats **security as a first-class chapter.** The free tools in this space are powerful but easy to misconfigure into a real incident (OpenClaw shipped a one-click RCE, tens of thousands of internet-exposed instances, and hundreds of malicious marketplace skills). The edge here is the *curated, secured* path — zero public ports, sandboxed code execution, prompt-injection defense, and cost controls that actually hold.
+
 > **New here?** Start with **[the guide →](product/blueprint.md)**
 
 ## Why own it instead of renting?
@@ -60,21 +62,15 @@ This is for the other instinct: **owning it.** The memory, the data, and the cos
 
 ## 📦 What you'll build
 
-The [guide](product/blueprint.md) is 13 chapters, blank server to running stack:
+The [guide](product/blueprint.md) takes you from a blank server to a running, hardened stack:
 
-1. What you're building (and why you'd own it instead of renting)
-2. VPS selection + bare-metal setup
-3. Hermes agent — install + configuration
-4. Paperclip control plane — install + first run
-5. Telegram gateway — your phone interface
-6. Day 1 org chart: **3 agents that work** (CEO / Research / Builder, with system prompts + budget caps)
-7. Event-driven wakeups via n8n
-8. Voice layer (Mac, optional)
-9. Architecture diagram + an honest cost model
-10. Troubleshooting
-11. Backups & recovery
-12. Keeping it current
-13. What to build next
+**🔨 Build it** — VPS + Tailscale networking · Hermes · Paperclip · Telegram gateway · the 3-agent org chart (CEO / Research / Builder) · scheduled routines & event-driven wakeups
+
+**🔒 Harden it** — a full **security chapter** (zero public ports, sandboxed code execution, scoped service accounts, risk-tiered approvals, prompt-injection defense) · **cost controls that actually hold** (circuit-breakers, not just monthly caps) · reliability & liveness supervision · safe backups · observability + a tiny evals harness
+
+**🧩 Extend it** — optional Mac voice layer · a self-maintaining Markdown **second brain** the agents file for you
+
+**📚 Reference** — architecture diagram, honest cost model, troubleshooting, and a version-pinning discipline so it doesn't rot
 
 ## ⚡ Quick Start
 
